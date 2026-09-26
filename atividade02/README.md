@@ -15,24 +15,29 @@ Os dois arquivos são carregados diretamente pelas URLs raw do GitHub:
 - `sp500_companies.csv`: cadastro e setor das empresas;
 - `sp500_stocks.csv`: observações diárias de preço e volume.
 
-A aplicação carrega todos os registros da tabela de cotações no pandas, sem amostragem. Para melhorar a performance, utiliza `usecols`, tipos numéricos compactos e `st.cache_data`. O download inicial ainda pode exigir alguns minutos e memória disponível.
+A aplicação carrega todos os registros da tabela de cotações no pandas, sem amostragem. Para melhorar a performance, utiliza `usecols`, tipos numéricos compactos e `st.cache_resource`: os dados são carregados, indexados por `symbol` e mantidos em memória uma única vez. O primeiro carregamento ainda pode exigir alguns minutos e memória disponível; as mudanças posteriores de filtro consultam apenas as empresas necessárias.
 
 ## Instalação e execução
 
-No PowerShell, dentro desta pasta:
+No PowerShell, dentro desta pasta, instale as dependências:
 
 ```powershell
-py -m venv .venv
-.venv\Scripts\Activate.ps1
 py -m pip install -r requirements.txt
-streamlit run app.py
 ```
+
+Depois, execute o dashboard usando o mesmo Python que instalou as dependências:
+
+```powershell
+py -m streamlit run app.py
+```
+
+O uso de ambiente virtual não é necessário para este projeto. A forma `py -m streamlit` evita problemas quando o executável `streamlit` não está disponível no `PATH` do Windows.
 
 Abra a URL exibida pelo Streamlit, normalmente `http://localhost:8501`.
 
 ## Interações
 
-O dashboard possui filtros por setor, período e `symbol`. Toda seleção atualiza os gráficos e informa quando não existem registros para o recorte escolhido.
+O dashboard possui filtros por setor e período. Ao selecionar um setor, ele carrega automaticamente as cinco empresas desse setor com maior volume médio de negociação no conjunto completo de dados. Toda seleção atualiza os gráficos e informa quando não existem registros para o recorte escolhido.
 
 ## Bibliotecas
 
